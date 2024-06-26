@@ -5,15 +5,16 @@ import { remarkReadingTime } from './src/utils/remark-reading-time.mjs';
 
 import tailwind from "@astrojs/tailwind";
 
-// https://astro.build/config
+
 export default defineConfig({
-  site: 'https://astro-theme-cody.netlify.app',
+  site: 'https://emyia2001.github.io',
   integrations: [mdx(), sitemap(), tailwind()],
+  
   markdown: {
     remarkPlugins: [remarkReadingTime],
     syntaxHighlight: 'shiki',
     shikiConfig: {
-      // https://docs.astro.build/en/guides/markdown-content/#syntax-highlighting
+      
       themes: {
         light: 'github-light',
         dark: 'github-dark',
