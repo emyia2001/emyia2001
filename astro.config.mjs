@@ -7,7 +7,7 @@ import tailwind from "@astrojs/tailwind";
 
 
 export default defineConfig({
-  site: 'https://snark.top',
+  site: 'https://www.snark.top',
   integrations: [mdx(), sitemap(), tailwind()],
 
   markdown: {
