@@ -1,0 +1,308 @@
+---
+title: "Windows开发配置"
+description: "自己windows的开发配置，方便以后重装系统后能快速恢复配置"
+pubDate: 2023-09-26
+heroImage: 
+    src: 'https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/wallhaven-2yl6px_3840x2160.8dwqhmso5u.webp'
+tags: ["Wsl", "powershell"]
+order: 1            #置顶
+---
+
+# powershell美化
+
+## fzf文件搜索
+
+```
+# 安装fzf
+scoop install fzf
+```
+
+## 添加用户配置文件
+
+把user_profile.ps1、command_profile.ps1文件创建到 “用户目录.config\powershell” 下
+使用$profile查看PowerShell配置文件，打开文件添加以下命令
+
+## oh-my-posh
+
+```
+# 安装oh-my-posh
+scoop install oh-my-posh
+
+# 在用户配置文件中添加
+oh-my-posh --init --shell pwsh --config C:\Users\31438\scoop\apps\oh-my-posh\current\themes\unicorn.omp.json | Invoke-Expression
+```
+
+## Terminal-Icons
+
+```
+# 安装Terminal-Icons
+scoop install terminal-icons
+
+# 在用户配置文件下添加
+Import-Module -Name Terminal-Icons
+```
+## posh-git
+
+```
+# 安装posh-git
+scoop install posh-git
+
+# 在用户配置文件下添加
+Import-Module posh-git
+```
+
+## PSReadLine
+
+```
+Get-PSReadLineKeyHandler
+
+# 安装PSReadLine
+Install-Module -Name PSReadLine -AllowPrerelease -Force
+```
+
+为PowerShell配置相关快捷键
+:::info
+配置文件$Profile
+:::
+
+```
+# PSReadLine配置
+Set-PSReadLineOption -PredictionSource History # 设置预测文本来源为历史记录
+Set-PSReadLineOption -HistorySearchCursorMovesToEnd # 选择历史命令时，光标移动到末尾
+Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete # 设置 Tab 为菜单补全和 Intellisense
+Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo # 设置 Ctrl+z 为撤销
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward # 设置向上键为后向搜索历史记录
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward # 设置向下键为前向搜索历史纪录
+Set-PsReadLineKeyHandler -key "Ctrl+Shift+a" -Function BeginningOfLine # 将光标移动到行首
+Set-PsReadLineKeyHandler -key "Ctrl+a" -Function BackwardWord # 向前移动一个单词
+# 将光标移动到行尾，并能补全历史命令
+Set-PSReadLineKeyHandler -Chord "Ctrl+Shift+e" -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptSuggestion()
+    [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
+}
+Set-PsReadLineKeyHandler -key "Ctrl+e" -Function ForwardWord # 向后移动一个单词
+# 定义颜色
+Set-PSReadLineOption -Colors @{
+    Command            = 'Magenta'
+    Number             = 'DarkBlue'
+    Member             = 'DarkBlue'
+    Operator           = 'DarkBlue'
+    Type               = 'DarkBlue'
+    Variable           = 'DarkGreen'
+    Parameter          = 'DarkGreen'
+    ContinuationPrompt = 'DarkBlue'
+    Default            = 'DarkBlue'
+    InlinePrediction   = 'DarkGray'
+}
+```
+## which 和 touch
+
+在command_profile.ps1中添加
+
+```
+# which 和 touch
+function which ($command) {
+  Get-Command -Name $command -ErrorAction SilentlyContinue |
+    Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue
+}
+function touch($name){
+  if ($name) {
+    $file_path = Split-Path -Path $name
+    $file_name = Split-Path -Path $name -Leaf
+    if ($file_path -eq "") {
+      $file_path = "."
+    }
+    if (-Not (Test-Path($file_path))) {
+      New-Item -ItemType "directory" -Path $file_path
+    }
+    New-Item -Path $file_path -Name $file_name -ItemType "file"
+  }
+  else {
+     Write-Host "Command to create new file."
+  }
+}
+```
+
+# scoop
+
+安装scoop
+
+```
+# 一键安装scoop
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+
+# 如果执行出错就是用这条命令后，再执行上一条命令
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+```
+
+帮助文档: https://scoop-docs.vercel.app/
+
+截止于2023/9/26，scoop安装的域名已被DNS污染，raw.githubusercontent.com无法被解析，需手动添加host。
+
+Windows：
+
+```
+code C:\Windows\System32\drivers\etc
+```
+
+Ubuntu，CentOS及macOS：
+
+```
+sudo vi /etc/hosts
+```
+
+添加以下内容：
+
+```
+199.232.68.133 raw.githubusercontent.com
+```
+
+# 系统环境配置
+
+## 添加软件源
+
+```
+scoop bucket add versions
+scoop bucket add java
+```
+
+## 安装python
+
+```
+scoop install python python27
+```
+
+多版本切换
+
+```
+scoop reset 想要使用的版本
+```
+
+## 安装neovim
+
+```
+scoop install neovim
+```
+
+neovim扩展:https://neovimcraft.com
+
+
+## 安装gcc
+
+```
+scoop install gcc
+```
+
+## 安装java环境
+
+```
+### 搜索JDK
+scoop search jdk
+
+### 下载JDK
+scoop install openjdk18
+```
+
+# 配置SSH密钥链接GitHub仓库
+
+## 生成ssh密钥
+
+```
+PowerShell 7.3.2
+PS C:\Users\dh176> ssh-keygen -t rsa -b 4096 -C "192.168.1.1"
+Generating public/private rsa key pair.
+Enter file in which to save the key (C:\Users\dh176/.ssh/id_rsa): key
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in key
+Your public key has been saved in key.pub
+The key fingerprint is:
+SHA256:Q2OhAt/RcZmaJ2pHX1WMDDsk40g7oLCJ+YkQNZaoYP4 192.168.1.1
+The key's randomart image is:
++---[RSA 4096]----+
+|.o*.  o.+.+ooo +.|
+|o*.B o =.*o+ .+ .|
+|O o + o Bo. o.   |
+|o+ . . o=o. ..   |
+|. +    oS+ .     |
+|   E  o ...      |
+|     . .         |
+|                 |
+|                 |
++----[SHA256]-----+
+PS C:\Users\dh176>
+```
+
+key是私钥，key.pub是公钥
+
+## 链接GitHub仓库
+
+### 安装git
+
+直接在官网下载git：https://git-scm.com/download/win
+
+打开Git Bash，设置user.name和user.email配置信息：
+
+![](https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/2.esdmmjabj.webp)
+
+```
+git config --global user.name "你的GitHub用户名"
+git config --global user.email "你的GitHub注册邮箱"
+```
+
+生成ssh密钥文件：
+
+```
+ssh-keygen -t rsa -C "你的GitHub注册邮箱"
+```
+
+直接三个回车即可，默认不需要设置密码
+
+在.ssh的文件夹中的id_rsa.pub密钥，将内容全部复制传上自己的github
+
+![](https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/3.lxvrc9t4.webp)
+
+![](https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/4.2obe645w3r.webp)
+
+在Git Bash中检测GitHub公钥设置是否成功，输入
+
+```
+ssh git@github.com
+```
+
+![](https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/5.sytdhu8ym.webp)
+
+## 配置hexo blog
+
+安装nodejs
+
+```
+scoop install nodejs
+```
+
+安装hexo
+
+```
+scoop install nodejs  #使用scoop安装nodejs
+npm install -g hexo-cli  #安装hexo
+```
+
+hexo常用命令
+
+```
+npm install hexo -g #安装Hexo  
+npm update hexo -g #升级  
+hexo init #初始化博客  
+
+命令简写  
+hexo n "我的博客" == hexo new "我的博客" #新建文章  
+hexo g == hexo generate #生成  
+hexo s == hexo server #启动服务预览  
+hexo d == hexo deploy #部署  
+
+hexo server #Hexo会监视文件变动并自动更新，无须重启服务器  
+hexo server -s #静态模式  
+hexo server -p 5000 #更改端口  
+hexo server -i 192.168.1.1 #自定义 IP  
+hexo clean #清除缓存，若是网页正常情况下可以忽略这条命令
+```

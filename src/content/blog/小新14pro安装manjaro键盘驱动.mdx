@@ -1,0 +1,27 @@
+---
+title: "小新14pro安装manjaro键盘驱动"
+description: "解决联想小新14pro安装manjaro后键盘无法使用"
+pubDate: 2023-10-10
+heroImage: 
+    src: 'https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/wallhaven-x6w3vl_2560x1440.3k7vleqncm.webp'
+tags: ["Linux"]
+---
+
+# 1.编辑grub文件
+
+```
+sudo gedit /etc/default/grub
+```
+
+# 2.修改成以下参数
+
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i8042.direct i8042.dumbkbd"
+```
+
+# 3.更新grub文件&&reboot
+
+```
+sudo update-grub
+sudo reboot
+```

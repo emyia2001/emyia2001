@@ -1,0 +1,48 @@
+---
+title: "ProxyChains"
+description: "一款非常好用的命令行代理，支持Windows，Linux，Mac"
+pubDate: 2022-11-07
+heroImage: 
+  src: 'https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/wallhaven-kxr28q_2560x1440.5mno9gdtih.webp'
+tags: ["Tools"]
+order: 2            #置顶
+---
+
+# 设置ProxyChains
+
+ProxyChains是Linux和其他Unices下的代理工具。它可以使任何程序通过代理上网，允许TCP和DNS通过代理隧道，支持HTTP、SOCKS4和SOCKS5类型的代理服务器，并且可配置多个代理。ProxyChains通过一个用户定义的代理列表强制连接指定的应用程序，直接断开接收方和发送方的连接。本节将介绍设置ProxyChains的方法。
+
+设置ProxyChains的具体操作步骤如下所示。
+
+（1）打开ProxyChains配置文件。执行命令如下所示：
+
+```
+vim /etc/proxychains.conf
+```
+
+执行以上命令后，打开文件的内容如下所示：
+
+![](https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/image.4jnyyjt55r.webp)
+
+输出的信息就是proxychains.conf文件的内容。由于篇幅的原因，这里只列出了部分内容。
+
+（2）将proxychains.conf文件中的dynamic_chain前面的注释符取消。要修改的配置项，是上面加粗的部分，如下所示：
+
+```
+dynamic_chain
+```
+
+（3）添加一些代理服务器到列表（proxychains.conf文件末尾），如下所示：
+
+![](https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/1.45hj7ogeaz.webp)
+
+红框内填写代理服务器IP及端口，保存退出。
+
+（4）查看是否代理成功，执行命令如下所示：
+
+```
+proxychains curl ipinfo.io
+```
+![](https://github.com/emyia2001/picx-images-hosting/raw/master/20240626/2.sytdb1cqf.webp)
+
+发现地址已经变成了台湾，说明代理成功了
